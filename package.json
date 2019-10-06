@@ -1,0 +1,17 @@
+{
+	"name": "actor-test-proxy",
+	"version": "0.0.1",
+	"description": "This is a boilerplate of an Apify actor.",
+	"dependencies": {
+		"apify": "^0.15.2",
+		"selenium-webdriver": "^4.0.0-alpha.5"
+	},
+	"devDependencies": {},
+	"scripts": {
+		"install": "./install_firefox.sh",
+		"start": "node main.js",
+		"test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
+	},
+	"author": "It's not you it's me",
+	"license": "ISC"
+}
