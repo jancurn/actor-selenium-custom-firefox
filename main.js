@@ -59,7 +59,10 @@ Apify.main(async () => {
     const url = await webDriver.getCurrentUrl();
     console.log(`Loaded URL ${url}`);
 
-    // await Apify.utils.sleep(1000 * 1000);
+    if (input.delaySecs > 0) {
+        console.log(`Sleeping for ${input.delaySecs} secs`);
+        await Apify.utils.sleep(input.delaySecs * 1000);
+    }
 
     console.log('Saving HTML');
     const html = await webDriver.executeAsyncScript(function() {
