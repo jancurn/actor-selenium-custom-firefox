@@ -11,12 +11,12 @@
       "editor": "textfield"
     },
 
-    "proxyConfiguration": {
-      "title": "Proxy",
-      "type": "object",
-      "nullable": false,
-      "description": "Specifies the type of proxy servers that will be used by the crawler in order to hide its origin.",
-      "editor": "proxy"
+    "proxyUrl": {
+      "title": "Proxy URL",
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Proxy to use (optional)",
+      "editor": "textfield"
     },
 
     "delaySecs": {

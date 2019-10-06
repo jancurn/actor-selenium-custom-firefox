@@ -1,13 +1,14 @@
 const util = require('util');
 const path = require('path');
 const fs = require('fs');
-const Apify = require('apify');
+const Apify = require('apify')
+const _ = require('underscore');;
 const { Capabilities, Builder } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
 const proxy = require('selenium-webdriver/proxy');
 const { anonymizeProxy } = require('proxy-chain');
 
-const launchFirefoxWebdriver = async () => {
+const launchFirefoxWebdriver = async (proxyUrl) => {
     // logging.installConsoleHandler();
     // logging.getLogger('webdriver.http').setLevel(logging.Level.ALL);
 
@@ -19,36 +20,38 @@ const launchFirefoxWebdriver = async () => {
 
     const firefoxOptions = new firefox.Options();
 
-    const firefoxPath = path.join(__dirname, './node_modules/custom_firefox/Nightly.app/Contents/MacOS/firefox-bin');
+    let firefoxPath;
+    if (process.env.APIFY_XVFB === '1') {
+        // Running on server
+        firefoxPath = '/firefox/firefox-bin';
+    } else {
+        // Running locally on macOS
+        firefoxPath = path.join(__dirname, './node_modules/custom_firefox/Nightly.app/Contents/MacOS/firefox-bin');
+    }
 
     console.log(`Using Firefox executable: ${firefoxPath}`);
     firefoxOptions.setBinary(firefoxPath);
 
-    // firefoxOptions.setBinary('/firefox/firefox-bin');
-
-    const proxyUrl = await anonymizeProxy(`http://groups-RESIDENTIAL,country-US,session-123234:${process.env.APIFY_PROXY_PASSWORD}@proxy.apify.com:8000`);
-    const parsedUrl = new URL(proxyUrl);
-
-    const webDriver = builder
+    const setup = builder
         .setFirefoxOptions(firefoxOptions)
-        .withCapabilities(capabilities)
-        .setProxy(proxy.manual({ http: parsedUrl.host, https: parsedUrl.host, ftp: parsedUrl.host }))
-        .build();
+        .withCapabilities(capabilities);
 
+    if (proxyUrl) {
+        console.log('Using provided proxyUrl');
+        const anonProxyUrl = await anonymizeProxy(proxyUrl);
+        const parsed = new URL(anonProxyUrl);
+        setup.setProxy(proxy.manual({ http: parsed.host, https: parsed.host, ftp: parsed.host }));
+    }
+
+    const webDriver = setup.build();
     return webDriver;
 };
 
 
 Apify.main(async () => {
-    // Get input of the actor (here only for demonstration purposes).
-    // If you'd like to have your input checked and have Apify display
-    // a user interface for it, add INPUT_SCHEMA.json file to your actor.
-    // For more information, see https://apify.com/docs/actor/input-schema
     const input = await Apify.getInput();
-    console.log('Input:');
-    console.dir(input);
 
-    const webDriver = await launchFirefoxWebdriver();
+    const webDriver = await launchFirefoxWebdriver(input.proxyUrl);
 
     console.log(`Opening URL: ${input.url}`);
     const xxx = await webDriver.get(input.url);
