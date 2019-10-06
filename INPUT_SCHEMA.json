@@ -1,0 +1,34 @@
+{
+  "title": "Schema for the my actor",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "url": {
+      "title": "URL",
+      "type": "string",
+      "maxLength": 1000,
+      "description": "URL of webpage to open",
+      "editor": "textfield"
+    },
+
+    "proxyConfiguration": {
+      "title": "Proxy",
+      "type": "object",
+      "nullable": false,
+      "description": "Specifies the type of proxy servers that will be used by the crawler in order to hide its origin.",
+      "editor": "proxy"
+    },
+
+    "delaySecs": {
+      "title": "Delay",
+      "type": "integer",
+      "description": "Indicates how long to wait after loading the page, before taking the screenshot",
+      "minimum": 0,
+      "maximum": 180,
+      "unit": "seconds"
+    }
+  },
+  "required": [
+    "url"
+  ]
+}
