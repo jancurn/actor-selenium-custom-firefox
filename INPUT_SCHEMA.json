@@ -8,7 +8,8 @@
       "type": "string",
       "maxLength": 1000,
       "description": "URL of webpage to open",
-      "editor": "textfield"
+      "editor": "textfield",
+      "prefill": "https://apify.com/store"
     },
 
     "proxyUrl": {
